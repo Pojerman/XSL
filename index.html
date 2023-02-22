@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MAthML</title>
+    <script src="index.js"></script>
+</head>
+<style>
+    .menu {
+        display: flex;
+        justify-content: space-around;
+    }
+    .menu > div {
+        display: flex;
+        flex-direction: column;
+    }
+    .menu > div > textarea {
+        margin-bottom: 15px;
+    }
+    .menu > div > #resultMathMl, #resultSVG {
+        margin-bottom: 15px;
+    }
+    .menu-mathml {
+        margin-right: 50px;
+    }
+    button {
+        max-width: 530px;
+        width: 100%;
+    }
+</style>
+<body>
+    <script id="ruleMath" type="text/xsl">
+        <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+            <xsl:output method="xml" indent="yes"/>
+            <xsl:template match="/">
+                <math xmlns="http://www.w3.org/1998/Math/MathML">
+                    <xsl:apply-templates />
+                </math>
+            </xsl:template>
+            <xsl:template match="корень">
+                <msqrt>
+                    <xsl:apply-templates select="*"/>
+                </msqrt>
+            </xsl:template>
+            <xsl:template match="строка">
+                <mrow>
+                    <xsl:apply-templates select="*"/>
+                </mrow>
+            </xsl:template>
+            <xsl:template match="операнд">
+                <mi>
+                    <xsl:value-of select="." />
+                </mi>
+            </xsl:template>
+            <xsl:template match="оператор">
+                <mo>
+                    <xsl:value-of select="." />
+                </mo>
+            </xsl:template>
+            <xsl:template match="число">
+                <mn>
+                    <xsl:value-of select="." />
+                </mn>
+            </xsl:template>
+            <xsl:template match="дробь">
+                <mfrac>
+                    <xsl:apply-templates select="*"/>
+                </mfrac>
+            </xsl:template>
+            <xsl:template match="низверх">
+                <munderover>
+                    <xsl:apply-templates select="*"/>
+                </munderover>
+            </xsl:template>
+            <xsl:template match="верх">
+                <msup>
+                    <xsl:apply-templates select="*"/>
+                </msup>
+            </xsl:template>
+            <xsl:template match="низ">
+                <msub>
+                    <xsl:apply-templates select="*"/>
+                </msub>
+            </xsl:template>
+        </xsl:stylesheet>
+    </script>
+    <script id="ruleSVG" type="text/xsl">
+        <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+            <xsl:output method="xml" indent="yes"/>
+                <xsl:template match="root">
+                    <svg width="{графика/@ширина}" height="{графика/@высота}">
+                        <xsl:apply-templates select="графика/эллипс"/>
+                    </svg>
+                </xsl:template>
+            <xsl:template match="эллипс">
+                <ellipse id="{@id}" fill="{@заливка}" stroke="{@ободок}" stroke-width="{@ширина-ободка}" cx="{@cx}" cy="{@cy}" rx="{@rx}" ry="{@ry}"/>
+            </xsl:template>
+        </xsl:stylesheet>
+    </script>
+    <div class="menu">
+        <div class="menu-mathml">
+            <textarea id="MathMlTransform" style="width: 530px; height: 200px" >
+        <строка>
+            <операнд>σ</операнд>
+            <оператор>=</оператор>
+            <корень>
+                <строка>
+                    <дробь>
+                        <строка>
+                            <число>1</число>
+                        </строка>
+                        <строка>
+                            <операнд>N</операнд>
+                        </строка>
+                    </дробь>
+                    <строка>
+                        <низверх>
+                            <строка>
+                                <оператор>∑</оператор>
+                            </строка>
+                            <строка>
+                                <операнд>i</операнд>
+                                <оператор>=</оператор>
+                                <число>1</число>
+                            </строка>
+                            <строка>
+                                <операнд>N</операнд>
+                            </строка>
+                        </низверх>
+                        <строка>
+                            <верх>
+                                <строка>
+                                    <оператор >(</оператор>
+                                    <низ>
+                                        <строка>
+                                            <операнд>x</операнд>
+                                        </строка>
+                                        <строка>
+                                            <операнд>i</операнд>
+                                        </строка>
+                                    </низ>
+                                    <оператор>−</оператор>
+                                    <операнд>μ</операнд>
+                                    <оператор >)</оператор>
+                                </строка>
+                                <строка>
+                                    <число>2</число>
+                                </строка>
+                            </верх>
+                        </строка>
+                    </строка>
+                </строка>
+            </корень>
+            <оператор>.</оператор>
+        </строка>
+    </textarea>
+            <button id="mathml" onclick="mathml()">MathML</button>
+            <h2>Result: MathMl</h2>
+            <div id="resultMathMl"></div>
+        </div>
+        <div class="menu-svg">
+            <textarea id="SVGTransform" style="width: 530px; height: 200px">
+        <root>
+            <графика ширина="640" высота="480">
+                <эллипс id="графика_1" заливка="rgba(255,0,0,0.5)" ободок="white" ширина-ободка="5" cx="206" cy="139" rx="100" ry="100"/>
+                <эллипс id="графика_2" заливка="rgba(0,0,255,0.5)" ободок="white" ширина-ободка="5" cx="108" cy="111" rx="100" ry="100"/>
+                <эллипс id="графика_3" заливка="rgba(0,255,0,0.5)" ободок="white" ширина-ободка="5" cx="134" cy="215" rx="100" ry="100"/>
+            </графика>
+        </root>>
+    </textarea>
+            <button id="svg" onclick="svg()">SVG</button>
+            <h2>Result: SVG</h2>
+            <div id="resultSVG"></div>
+        </div>
+    </div>
+
+</body>
+</html>
